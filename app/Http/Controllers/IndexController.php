@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class IndexController extends Controller
 {
     public function anasayfaGoster(){
-       $urunler =Urun::all(); //veritabanından tüm ürünleri çek
+       $urunler =Urun::with("kategori")->get();
         return view("index",compact("urunler")); //blade dosyasına gönderiyorum compactın amacı
         //daha kolay bir şekilde veriyi sayfada göstermeey yarıyor onun alternatifi ['urunler' => $urunler] buydu
     }
