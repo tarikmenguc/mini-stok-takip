@@ -17,6 +17,7 @@ return new class extends Migration
         $table->decimal('fiyat', 8, 2);
         $table->unsignedBigInteger('kategori_id');
         $table->foreign('kategori_id')->references('id')->on('kategoris')->onDelete('cascade');
+       $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

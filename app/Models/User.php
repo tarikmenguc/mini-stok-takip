@@ -45,4 +45,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function urunler(){
+        return $this->hasMany(Urun::class);
+    }
 }
