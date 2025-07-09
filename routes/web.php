@@ -40,3 +40,13 @@ Route::post("/register",[RegisterController::class,"register"])->name("kayit");
 Route::get('/login', function () {
     return 'Giriş sayfası yapılmadı :)';
 })->name('login');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
