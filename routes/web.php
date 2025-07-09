@@ -4,6 +4,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CreateController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Database\Query\IndexHint;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Types\Relations\Role;
@@ -33,3 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil', [UserController::class, 'guncelle'])->name('profil.update');
     Route::delete('/profil', [UserController::class, 'sil'])->name('profil.destroy');
 });
+
+Route::get("/registergoster",[RegisterController::class,"registergoster"])->name("goster");
+Route::post("/register",[RegisterController::class,"register"])->name("kayit");
+Route::get('/login', function () {
+    return 'Giriş sayfası yapılmadı :)';
+})->name('login');
