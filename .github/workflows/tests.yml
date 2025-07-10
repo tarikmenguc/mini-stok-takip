@@ -3,11 +3,11 @@ name: Tests
 on:
   push:
     branches:
-      - main
-      - '*.x'
+      - main         # ana dal
+      - '*.x'        # sürüm dalları (örn. 10.x)
   pull_request:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'   # her gece koşsun
 
 permissions:
   contents: read
@@ -16,43 +16,75 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    # --- MySQL servisi ------------------
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing          # .env’de kullanacağız
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    # ------------------------------------
+
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
+        php: [8.2, 8.3, 8.4]               # aynı job 3 kez döner
 
     name: PHP ${{ matrix.php }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # 1) Kodu al
+      - uses: actions/checkout@v4
 
+      # 2) Node kurulumu (vite / laravel-mix vs. için)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
       - name: Install NPM dependencies
-        run: npm install
+        run: npm ci                      # hızlı kurulum
 
       - name: Build frontend assets
-        run: npm run build
+        run: npm run build --if-present  # package.json’da varsa
 
+      # 3) PHP kurulumu
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          extensions: pdo_mysql          # MySQL sürücüsü
           coverage: none
 
+      # 4) Composer paketleri
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress --ansi
 
-      - name: Copy environment file
-        run: cp .env.example .env
+      # 5) .env hazırlığı
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+          sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env
+          sed -i 's/DB_PORT=.*/DB_PORT=3306/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=testing/' .env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=root/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=root/' .env
 
+      # 6) Uygulama anahtarı & migrasyon
       - name: Generate app key
-        run: php artisan key:generate
+        run: php artisan key:generate --ansi
 
+      - name: Run migrations
+        run: php artisan migrate --force --ansi
+
+      # 7) Testleri çalıştır
       - name: Execute tests
-        run: php artisan test
+        run: php artisan test --ansi

@@ -29,8 +29,8 @@
             </div>
 
             <div>
-                <label for="StokMiktari" class="block text-sm font-medium text-gray-700">Stok Miktarı</label>
-                <input type="number" name="StokMiktari" id="StokMiktari" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2" value="{{ old('StokMiktari') }}">
+                <label for="stok" class="block text-sm font-medium text-gray-700">Stok Miktarı</label>
+                <input type="number" name="stok" id="stok" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2" value="{{ old('stok') }}">
             </div>
 
             <div>

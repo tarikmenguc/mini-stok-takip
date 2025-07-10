@@ -35,7 +35,7 @@
                     <div>
                         <div class="text-2xl font-bold text-gray-800 mb-2">{{ $urun->ad }}</div>
                         <div class="text-gray-600 mb-1"><span class="font-medium">Fiyat:</span> {{ $urun->fiyat }} ₺</div>
-                        <div class="text-gray-600 mb-1"><span class="font-medium">Açıklama:</span> {{ $urun->aciklama }}</div>
+                        <div class="text-gray-600 mb-1"><span class="font-medium">Stok:</span> {{ $urun->stok }}</div>
                         <div class="text-gray-600 mb-4"><span class="font-medium">Kategori:</span> {{ $urun->kategori->ad ?? 'Kategori Yok' }}</div>
                     </div>
                     <div class="flex space-x-2 mt-auto">

@@ -19,7 +19,7 @@ class CreateController extends Controller
     $request->validate([
         'ad' => 'required',
         
-        'StokMiktari' => 'required|integer',
+        'stok' => 'required|integer',
         'fiyat' => 'required|numeric',
         'kategori_id' => 'required|exists:kategoris,id'
     ]);
