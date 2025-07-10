@@ -39,15 +39,20 @@
                         <div class="text-gray-600 mb-4"><span class="font-medium">Kategori:</span> {{ $urun->kategori->ad ?? 'Kategori Yok' }}</div>
                     </div>
                     <div class="flex space-x-2 mt-auto">
-                        <form action="{{ url('/duzenle/' . $urun->id) }}" method="get">
-                            @csrf
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition w-full">Düzenle</button>
-                        </form>
-                        <form action="{{ url('/sil/' . $urun->id) }}" method="post">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition w-full" onclick="return confirm('Silmek istediğine emin misin?')">Sil</button>
-                        </form>
+                         @can('update', $urun)
+        <form action="{{ url('/duzenle/' . $urun->id) }}" method="get">
+            @csrf
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition w-full">Düzenle</button>
+        </form>
+    @endcan
+
+    @can('delete', $urun)
+        <form action="{{ url('/sil/' . $urun->id) }}" method="post">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition w-full" onclick="return confirm('Silmek istediğine emin misin?')">Sil</button>
+        </form>
+    @endcan
                     </div>
                 </div>
             @empty
