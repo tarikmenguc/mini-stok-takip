@@ -27,18 +27,7 @@
             </div>
         @endif
 
-        <div class="grid grid-cols-1 gap-4 mb-8">
-            @forelse($kategoriler as $kategori)
-                <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between border border-gray-100 hover:shadow-md transition">
-                    <div class="text-base font-medium text-gray-800 truncate w-2/3">{{ $kategori->ad }}</div>
-                    <a href="{{ url('/kategori_duzenle/' . $kategori->id) }}"
-                       class="inline-block px-4 py-2 bg-green-500 text-white rounded-md text-sm font-semibold hover:bg-green-600 transition ml-4 shadow"
-                    >Düzenle</a>
-                </div>
-            @empty
-                <div class="text-center text-gray-500 py-8 text-sm">Hiç kategori yok.</div>
-            @endforelse
-        </div>
+        
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($urunler as $urun)
