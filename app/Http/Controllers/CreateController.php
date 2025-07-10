@@ -28,7 +28,7 @@ class CreateController extends Controller
     Urun::create([
         'ad' => $request->ad,
         
-        'stok' => $request->StokMiktari,
+        'stok' => $request->stok,
         'fiyat' => $request->fiyat,
         'kategori_id' => $request->kategori_id,
         'user_id' => Auth::id(), 

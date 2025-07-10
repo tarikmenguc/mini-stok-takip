@@ -12,7 +12,7 @@ class IndexController extends Controller
 {
    use AuthorizesRequests;
     public function anasayfaGoster(){
-      if(Auth::check()){
+      if(Auth::check()){  
         $kullanici=Auth::user();
       }
       $kullaniciId = Auth::id();
