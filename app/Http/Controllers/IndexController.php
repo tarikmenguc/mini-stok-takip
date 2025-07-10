@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Urun;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
 {
     public function anasayfaGoster(){
-       $urunler =Urun::with("kategori")->get();
+      if(Auth::check()){
+        $kullanici=Auth::user();
+      }
+      $kullaniciId = Auth::id();
+$urunler = Urun::where('user_id', $kullaniciId)->with('kategori')->get();
+        
         return view("index",compact("urunler")); //blade dosyasına gönderiyorum compactın amacı
         //daha kolay bir şekilde veriyi sayfada göstermeey yarıyor onun alternatifi ['urunler' => $urunler] buydu
     }

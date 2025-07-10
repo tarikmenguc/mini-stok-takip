@@ -1,52 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Türkçe karakterler için charset ayarı -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobil uyumluluk -->
-    <title>Ana Sayfa</title>
-</head>
-<body>
-    <h1>Ana sayfaya hoş geldin</h1><br><br>
-    <h2>Bu sayfada düzenleme, silme ve ürün görüntüleme yapabilirsin</h2>
+@extends('layouts.app')
 
-    {{-- Başarı mesajı varsa göster --}}
-    @if(session("basari"))
-        <p style="color: green;">{{ session("basari") }}</p>
-    @endif
+@section('content')
+    <div class="max-w-6xl mx-auto mt-8">
+        @auth
+            <div class="mb-4 text-gray-700 text-lg">
+                👋 <span class="font-semibold">Hoş geldin,</span> <span class="font-bold text-indigo-700">{{ Auth::user()->name }}</span>
+            </div>
+        @endauth
 
-    {{-- Hatalar varsa (örneğin validation) onları listele --}}
-    @if($errors->any())
-        <ul style="color: red;">
-            @foreach($errors->all() as $hata)
-                <li>{{ $hata }}</li>
-            @endforeach
-        </ul>
-    @endif
+        <h1 class="text-3xl font-bold mb-2 text-gray-800">Ana Sayfa</h1>
+        <h2 class="text-lg text-gray-600 mb-6">Ürünleri Düzenleyebilir, Silebilir veya Görüntüleyebilirsin</h2>
 
-    {{-- Ürünleri tek tek gösteriyoruz --}}
-    @foreach($urunler as $urun)
-        <div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">
-            <p><strong>Ad:</strong> {{ $urun->ad }}</p>
-            <p><strong>Fiyat:</strong> {{ $urun->fiyat }} ₺</p>
-            <p><strong>Açıklama:</strong> {{ $urun->aciklama }}</p>
-            <p><strong>Kategori ID:</strong> {{ $urun->kategori_id }}</p>
+        @if(session("basari"))
+            <div class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300">
+                {{ session("basari") }}
+            </div>
+        @endif
 
-            {{-- DÜZENLEME FORMU (GET ile yönlendiriyoruz) --}}
-            <form action="{{ url('/duzenle/' . $urun->id) }}" method="get" style="display: inline-block;">
-                @csrf
-                <button type="submit">Düzenle</button>
-            </form>
+        @if($errors->any())
+            <div class="mb-4 p-3 rounded bg-red-100 text-red-800 border border-red-300">
+                <ul class="list-disc pl-5">
+                    @foreach($errors->all() as $hata)
+                        <li>{{ $hata }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-            {{-- SİLME FORMU (POST yöntemi, method spoofing ile DELETE) --}}
-            <form action="{{ url('/sil/' . $urun->id) }}" method="post" style="display: inline-block;">
-                @csrf
-                @method('DELETE') {{-- Laravel’de DELETE işlemi için --}}
-                <button type="submit" onclick="return confirm('Silmek istediğine emin misin?')">Sil</button>
-            </form>
+        <div class="grid grid-cols-1 gap-4 mb-8">
+            @forelse($kategoriler as $kategori)
+                <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between border border-gray-100 hover:shadow-md transition">
+                    <div class="text-base font-medium text-gray-800 truncate w-2/3">{{ $kategori->ad }}</div>
+                    <a href="{{ url('/kategori_duzenle/' . $kategori->id) }}"
+                       class="inline-block px-4 py-2 bg-green-500 text-white rounded-md text-sm font-semibold hover:bg-green-600 transition ml-4 shadow"
+                    >Düzenle</a>
+                </div>
+            @empty
+                <div class="text-center text-gray-500 py-8 text-sm">Hiç kategori yok.</div>
+            @endforelse
         </div>
-    @endforeach
 
-    {{-- Yeni ürün ekleme sayfasına gitmek için bir link --}}
-    <a href="{{ url('/ekle') }}">Yeni Ürün Ekle</a>
-</body>
-</html>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse($urunler as $urun)
+                <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between h-full border border-gray-100 hover:shadow-2xl transition">
+                    <div>
+                        <div class="text-2xl font-bold text-gray-800 mb-2">{{ $urun->ad }}</div>
+                        <div class="text-gray-600 mb-1"><span class="font-medium">Fiyat:</span> {{ $urun->fiyat }} ₺</div>
+                        <div class="text-gray-600 mb-1"><span class="font-medium">Açıklama:</span> {{ $urun->aciklama }}</div>
+                        <div class="text-gray-600 mb-4"><span class="font-medium">Kategori:</span> {{ $urun->kategori->ad ?? 'Kategori Yok' }}</div>
+                    </div>
+                    <div class="flex space-x-2 mt-auto">
+                        <form action="{{ url('/duzenle/' . $urun->id) }}" method="get">
+                            @csrf
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition w-full">Düzenle</button>
+                        </form>
+                        <form action="{{ url('/sil/' . $urun->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition w-full" onclick="return confirm('Silmek istediğine emin misin?')">Sil</button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-3 text-center text-gray-500 py-12 text-lg">Hiç ürün yok.</div>
+            @endforelse
+        </div>
+
+        <div class="mt-10 flex justify-end">
+            <a href="{{ url('/ekle') }}" class="inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded shadow hover:bg-green-700 transition">+ Yeni Ürün Ekle</a>
+        </div>
+    </div>
+@endsection

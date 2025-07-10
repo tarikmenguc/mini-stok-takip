@@ -1,44 +1,32 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
- </head>
- <body>
-    @if(session('basari'))
-    <p style="color: green;">{{ session('basari') }}</p>
-@endif
-@if ($errors->any())
-    <ul style="color: red;">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
+@extends('layouts.app')
 
-    @foreach($kategoriler as $kategori)
-    <p>
-        {{ $kategori->ad }}
+@section('content')
+    <div class="max-w-2xl mx-auto mt-8">
+        <h1 class="text-2xl font-bold mb-4 text-gray-800">Kategoriler</h1>
 
-        {{-- Düzenle butonu --}}
-        <a href="{{ url('/kategori_duzenle/' . $kategori->id) }}">Düzenle</a>
+        @if(session('basari'))
+            <div class="mb-4 p-2 rounded bg-green-100 text-green-800 border border-green-300 text-sm">
+                {{ session('basari') }}
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="mb-4 p-2 rounded bg-red-100 text-red-800 border border-red-300 text-sm">
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        {{-- Silme butonu --}}
-        <form action="{{ url('/kategori/' . $kategori->id) }}" method="POST" style="display:inline">
-            @csrf
-            @method('DELETE')
-            <button type="submit" onclick="return confirm('Silmek istediğine emin misin?')">Sil</button>
-        </form>
-    </p>
-@endforeach
-
-    <label >kategori eklemek ister misin çocuk adam</label>
-   <form action="{{url('/kategori_ekle')}}"method="POST">
-@csrf
-<input type="text" name="ad" id="ad" value="{{old('ad')}}">
- <button type="submit"> Kategori Ekle</button>
-
-   </form>
- </body>
- </html>
+        <div class="grid grid-cols-1 gap-4 mb-8">
+            @forelse($kategoriler as $kategori)
+                <a href="{{ url('/kategori_duzenle/' . $kategori->id) }}" class="block bg-white shadow rounded-lg p-4 border border-gray-100 hover:shadow-md transition hover:bg-green-50">
+                    <div class="text-base font-medium text-gray-800 truncate">{{ $kategori->ad }}</div>
+                </a>
+            @empty
+                <div class="text-center text-gray-500 py-8 text-sm">Hiç kategori yok.</div>
+            @endforelse
+        </div>
+    </div>
+@endsection

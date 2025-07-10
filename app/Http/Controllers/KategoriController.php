@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 class KategoriController extends Controller
 {
     public function KategoriGoster(){
+        
         $kategoriler=Kategori::all();
         return view("kategori",compact("kategoriler"));
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Urun;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Auth;
 
 class CreateController extends Controller
 {
@@ -14,10 +15,25 @@ class CreateController extends Controller
         return view("create", compact("kategoriler"));
     }
     public function ekle(Request $request){
-   $validate=$request->validate(["ad" => "required",
-            "fiyat" => "required|numeric",
-            "kategori_id" => "required|exists:kategoris,id"]);
-            Urun::create($validate);
-            return redirect("index")->with("basari","verilerl başarıyla eklendi");
+  
+    $request->validate([
+        'ad' => 'required',
+        
+        'StokMiktari' => 'required|integer',
+        'fiyat' => 'required|numeric',
+        'kategori_id' => 'required|exists:kategoris,id'
+    ]);
+
+    // Ürün oluşturuluyor
+    Urun::create([
+        'ad' => $request->ad,
+        
+        'stok' => $request->StokMiktari,
+        'fiyat' => $request->fiyat,
+        'kategori_id' => $request->kategori_id,
+        'user_id' => Auth::id(), 
+    ]);
+
+    return redirect('/index')->with('basari', 'Ürün başarıyla eklendi!');
     }
 }
