@@ -12,13 +12,19 @@ class IndexController extends Controller
 {
    use AuthorizesRequests;
     public function anasayfaGoster(){
-      if(Auth::check()){  
-        $kullanici=Auth::user();
-      }
-      $kullaniciId = Auth::id();
-$urunler = Urun::where('user_id', $kullaniciId)->with('kategori')->paginate(15); //->get() 
-        
-        return view("index",compact("urunler")); //blade dosyasına gönderiyorum compactın amacı
+      
+    $kullaniciId = Auth::id();
+    $search = request('search');
+
+    $urunler = Urun::where('user_id', $kullaniciId)
+        ->when($search, function ($query, $search) {
+            $query->where('ad', 'like', '%' . $search . '%');
+        })
+        ->with('kategori')
+        ->paginate(15)
+        ->appends(['search' => $search]);
+
+    return view("index", compact("urunler")); //blade dosyasına gönderiyorum compactın amacı
         //daha kolay bir şekilde veriyi sayfada göstermeey yarıyor onun alternatifi ['urunler' => $urunler] buydu
     }
     

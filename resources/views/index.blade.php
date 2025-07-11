@@ -27,7 +27,19 @@
             </div>
         @endif
 
-        
+        <form method="GET" action="{{ url('/index') }}" class="mb-6">
+    <input
+        type="text"
+        name="search"
+        placeholder="Ürün ara..."
+        value="{{ request('search') }}"
+        class="px-4 py-2 border border-gray-300 rounded shadow-sm w-1/2"
+    >
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        Ara
+    </button>
+</form>
+
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($urunler as $urun)
