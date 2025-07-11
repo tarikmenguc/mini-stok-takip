@@ -60,6 +60,10 @@
             @endforelse
         </div>
 
+        @if($urunler->hasPages())
+        <div class="mt-8">{{$urunler->links()}}</div>
+        @endif
+
         <div class="mt-10 flex justify-end">
             <a href="{{ url('/ekle') }}" class="inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded shadow hover:bg-green-700 transition">+ Yeni Ürün Ekle</a>
         </div>

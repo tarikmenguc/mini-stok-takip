@@ -16,7 +16,7 @@ class IndexController extends Controller
         $kullanici=Auth::user();
       }
       $kullaniciId = Auth::id();
-$urunler = Urun::where('user_id', $kullaniciId)->with('kategori')->get();
+$urunler = Urun::where('user_id', $kullaniciId)->with('kategori')->paginate(15); //->get() 
         
         return view("index",compact("urunler")); //blade dosyasına gönderiyorum compactın amacı
         //daha kolay bir şekilde veriyi sayfada göstermeey yarıyor onun alternatifi ['urunler' => $urunler] buydu
