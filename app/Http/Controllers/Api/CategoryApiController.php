@@ -27,4 +27,10 @@ return response()->json(["message"=>"basarılı bir sekilde guncellendi"]);
         Kategori::findOrFail($id)->delete();
 return response()->json(["message"=>"basarılı bir sekilde silinid"]);
     }
+
+    public function show($id)
+{
+    $kategori = Kategori::findOrFail($id);
+    return response()->json($kategori);
+}
 }
