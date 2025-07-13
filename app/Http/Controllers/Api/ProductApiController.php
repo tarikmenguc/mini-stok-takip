@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Urun;
 use Illuminate\Http\Request;
+use Berkayk\OneSignal\OneSignalFacade as OneSignal;
 
 class ProductApiController extends Controller
 {
@@ -30,13 +31,22 @@ class ProductApiController extends Controller
         'fiyat' => 'required|numeric',
         'kategori_id' => 'required|exists:kategoris,id'
     ]);
-   Urun::create([
+  $urun= Urun::create([
     'ad' => $request->ad,
     'stok' => $request->stok,
     'fiyat' => $request->fiyat,
     'kategori_id' => $request->kategori_id,
     'user_id' => $request->user()->id, // daha güvenli
+
 ]);
+ OneSignal::sendNotificationToAll(
+        "Yeni ürün eklendi: " . $urun->ad,
+        null,
+        null,
+        null,
+        null,
+        ['TTL' => 3600]
+    );
 return response()->json(["message"=>"basarili bir sekilde eklendi"]);   
 }
     public function destroy($id){
